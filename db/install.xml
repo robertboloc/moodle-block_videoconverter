@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/video_converter/db" VERSION="20140210" COMMENT="XMLDB file for the video converter block"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_vc_tokens" COMMENT="Stores the user tokens" NEXT="block_vc_queue">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="token"/>
+        <FIELD NAME="token" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="token" NEXT="timeexpires"/>
+        <FIELD NAME="timeexpires" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timecreated"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_token" UNIQUE="false" FIELDS="userid, token"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_vc_queue" COMMENT="Default comment for the table, please edit me" PREVIOUS="block_vc_tokens" NEXT="block_vc_files">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="fileid"/>
+        <FIELD NAME="fileid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="fileid" NEXT="position"/>
+        <FIELD NAME="position" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="userid" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="15" NOTNULL="false" SEQUENCE="false" PREVIOUS="position" NEXT="timeadded"/>
+        <FIELD NAME="timeadded" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="status" NEXT="timefinished"/>
+        <FIELD NAME="timefinished" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timeadded" NEXT="timeupdated"/>
+        <FIELD NAME="timeupdated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timefinished" NEXT="timedownloaded"/>
+        <FIELD NAME="timedownloaded" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timeupdated"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_vc_files" COMMENT="Default comment for the table, please edit me" PREVIOUS="block_vc_queue">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false" PREVIOUS="id" NEXT="hash"/>
+        <FIELD NAME="hash" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="size"/>
+        <FIELD NAME="size" TYPE="char" LENGTH="40" NOTNULL="false" SEQUENCE="false" COMMENT="in bytes" PREVIOUS="hash"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
