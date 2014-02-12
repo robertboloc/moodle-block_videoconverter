@@ -19,11 +19,12 @@ function format_bytes($size, $precision = 2) {
 
 function mime_is_valid($mime) {
     $accepted_mimes_string = get_config('block_video_converter', 'acceptedmimetypes');
-    $accepted_mimes = explode("\n", $accepted_mimes_string);
+
+    $accepted_mimes = explode("\n", str_replace(" ", '', $accepted_mimes_string));
 
     $clean_accepted_mimes = array();
     foreach($accepted_mimes as $accepted_mime) {
-        $clean_accepted_mimes[substr($accepted_mime, 0, -1)] = true;
+        $clean_accepted_mimes[trim($accepted_mime)] = true;
     }
 
     return isset($clean_accepted_mimes[$mime]);

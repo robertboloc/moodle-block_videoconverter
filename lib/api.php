@@ -125,7 +125,6 @@ switch($request) {
 
         if($queue_item_id) {
             $queue_manager->update_status($queue_item_id, queue::STATUS_HIDDEN, time());
-            //@TODO: obtain the file id and delete id
 
             api_response(array(
                 'status' => 'success',

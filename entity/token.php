@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/entity.php';
+require_once __DIR__ . '/queue.php';
 
 class token extends entity {
 
@@ -32,7 +33,7 @@ class token extends entity {
 
         $users_in = implode("','", array_keys($users));
 
-        $select = "token = ? AND (timeexpires > ? OR userid IN ($users_in))";
+        $select = "token = ? AND (timeexpires > ? OR userid IN ('$users_in'))";
         return $this->db->record_exists_select('block_vc_tokens', $select, array(
             $token,
             time(),
