@@ -56,10 +56,7 @@ if($_FILES['video']['size'] > $CFG->maxbytes) {
 }
 
 // Check the mime
-$videoFileInfo = new finfo(FILEINFO_MIME_TYPE);
-$mime = $videoFileInfo->file($_FILES['video']['tmp_name']);
-
-if(!mime_is_valid($mime)) {
+if(!has_valid_mime($_FILES['video']['tmp_name'])) {
     api_response(array(
         'status' => 'error',
         'message' => 'error:wrongmime',

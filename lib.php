@@ -17,7 +17,12 @@ function format_bytes($size, $precision = 2) {
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
-function mime_is_valid($mime) {
+function has_valid_mime($file) {
+
+    $raw_mime = exec('file --mime-type '. $file);
+
+    $mime = str_replace(array($file . ':', ' '), '', $raw_mime);
+
     $accepted_mimes_string = get_config('block_video_converter', 'acceptedmimetypes');
 
     $accepted_mimes = explode("\n", str_replace(" ", '', $accepted_mimes_string));
