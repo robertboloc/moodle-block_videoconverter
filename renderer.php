@@ -1,19 +1,33 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @author Robert Boloc <robert.boloc@urv.cat>
+ * @author    Robert Boloc <robert.boloc@urv.cat>
  * @copyright 2014 Servei de Recursos Educatius (http://www.sre.urv.cat)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once __DIR__ . '/lib.php';
+require_once(__DIR__ . '/lib.php');
 
 class block_video_converter_renderer extends plugin_renderer_base {
 
     public function user_queue(array $queue, $token) {
 
-        if(empty($queue)) {
+        if (empty($queue)) {
             global $OUTPUT;
-            return $OUTPUT->box(get_string('queueempty', 'block_video_converter')).'<br>';
+            return $OUTPUT->box(get_string('queueempty', 'block_video_converter')) . '<br>';
         }
 
         $table = new html_table();
@@ -37,17 +51,17 @@ class block_video_converter_renderer extends plugin_renderer_base {
             get_string('action', 'block_video_converter'),
         );
 
-        foreach($queue as $row) {
+        foreach ($queue as $row) {
 
-            // Action
+            // Action.
             $action = '-';
 
-            // Status
+            // Status.
             $status_class = '';
             switch($row->status) {
                 case queue::STATUS_CONVERTED :
                 case queue::STATUS_DOWNLOADED :
-                    // Action
+                    // Action.
                     $downloader = rtrim(get_config('block_video_converter', 'converterurl'), '/') . '/download.php';
                     $download_url = new moodle_url($downloader, array(
                         'token' => $token,
@@ -59,7 +73,7 @@ class block_video_converter_renderer extends plugin_renderer_base {
                         get_string('download', 'block_video_converter')
                     );
 
-                    // Status
+                    // Status.
                     $status_class = 'block_video_converter-badge-green';
                     break;
                 case queue::STATUS_QUEUED :

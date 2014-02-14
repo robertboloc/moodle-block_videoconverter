@@ -1,12 +1,27 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @author Robert Boloc <robert.boloc@urv.cat>
+ * @author    Robert Boloc <robert.boloc@urv.cat>
  * @copyright 2014 Servei de Recursos Educatius (http://www.sre.urv.cat)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . '/entity.php';
-require_once __DIR__ . '/queue.php';
+require_once(__DIR__ . '/entity.php');
+require_once(__DIR__ . '/queue.php');
 
 class token extends entity {
 
@@ -14,14 +29,14 @@ class token extends entity {
 
         $this->clean_old_tokens();
 
-        // Check that the user does not have a valid token already
-        if(!$this->has_valid_token()) {
+        // Check that the user does not have a valid token already.
+        if (!$this->has_valid_token()) {
             $this->create_token();
         }
     }
 
     public function is_valid($token) {
-        // Obtain users with tokens in use
+        // Obtain users with tokens in use.
         $users = $this->db->get_records_sql(
             'SELECT
                  DISTINCT userid
@@ -71,7 +86,7 @@ class token extends entity {
             'userid' => $USER->id,
         ));
 
-        if($token && ($queued_items > 0 || (int)$token->timeexpires > time())) {
+        if ($token && ($queued_items > 0 || (int) $token->timeexpires > time())) {
             return true;
         }
 
@@ -85,11 +100,11 @@ class token extends entity {
     }
 
     /**
-     * Only remove tokens not in use
+     * Only remove tokens not in use.
      */
     public function clean_old_tokens() {
 
-        // Obtain users with tokens in use
+        // Obtain users with tokens in use.
         $users = $this->db->get_records_sql(
             'SELECT
                  DISTINCT userid
