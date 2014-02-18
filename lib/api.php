@@ -170,6 +170,28 @@ switch($request) {
             'message' => 'error:queueitemstatusupdatefailed',
         ));
         break;
+    case 'queue.item' :
+
+        $queue_item_id = filter_input(INPUT_GET, 'queue_item_id');
+
+        if ($queue_item_id) {
+            $item_status = $queue_manager->get_status($queue_item_id);
+
+            if($item_status) {
+                api_response(array(
+                    'status' => 'success',
+                    'data' => array(
+                        'status' => $item_status,
+                    ),
+                ));
+            }
+        }
+
+        api_response(array(
+            'status' => 'error',
+            'message' => 'error:queueitemidnotfound',
+        ));
+        break;
     default:
         api_response(array(
             'status' => 'error',

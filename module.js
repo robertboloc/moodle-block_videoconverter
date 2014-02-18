@@ -106,7 +106,6 @@ M.block_video_converter = {
                             }
                         }
                         catch (e) {
-                            console.log(o.responseText);
                             parsedResponse = 'error:jsonparsing';
                         }
 
@@ -125,5 +124,66 @@ M.block_video_converter = {
         });
 
         return false;
+    },
+
+    refreshStatuses : function (token) {
+
+        // Obtain all the refreshable ids
+        var ids = Y.all('.block_video_converter-status-cell');
+
+        // Reuse this vars
+        var id = null;
+        var status = null;
+
+        ids.each(function(node) {
+            id = node.getAttribute('data-id');
+            status = node.getAttribute('data-status');
+
+            // If in a final state do nothing
+            if(status !== 'downloaded' && status !== 'converted' && status !== 'failed') {
+                // Obtain the updated status
+                Y.io('api.php', {
+                    method : 'GET',
+                    data : 'token=' + token + '&request=queue.item&queue_item_id=' + id,
+                    on : {
+                        complete : function(id, o) {
+
+                            var updatedStatus;
+
+                            try {
+                                var jsonResponse = Y.JSON.parse(o.response);
+
+                                if (jsonResponse.status === 'success') {
+
+                                    updatedStatus = jsonResponse.data.status;
+
+                                    var statusSpanContents = node.getElementsByTagName('span');
+                                    var statusSpan = statusSpanContents.shift();
+
+                                    // Check if status changed
+                                    if (status !== updatedStatus) {
+
+                                        statusSpan.set('innerHTML', M.util.get_string('status:' + updatedStatus, 'block_video_converter'));
+
+                                        switch(updatedStatus) {
+                                            case 'converting' :
+                                                statusSpan.setAttribute('class', 'block_video_converter-badge-yellow');
+                                                break;
+                                            case 'failed' :
+                                                statusSpan.setAttribute('class', 'block_video_converter-badge-red');
+                                                break;
+                                            case 'converted' :
+                                                statusSpan.setAttribute('class', 'block_video_converter-badge-green');
+                                                break;
+                                            default:
+                                        }
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                });
+            }
+        });
     }
 };

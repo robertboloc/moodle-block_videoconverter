@@ -93,10 +93,18 @@ class block_video_converter_renderer extends plugin_renderer_base {
                 array('class' => $status_class)
             );
 
+            $status_cell = new html_table_cell($status);
+            $status_cell->attributes = array(
+                'class' => 'block_video_converter-status-cell',
+                'id' => 'block_video_converter-status-cell-' . $row->id,
+                'data-id' => $row->id,
+                'data-status' => $row->status,
+            );
+
             $table->data[] = new html_table_row(array(
                 $row->name,
                 format_bytes($row->size),
-                $status,
+                $status_cell,
                 $row->status === queue::STATUS_CONVERTING ||
                 $row->status === queue::STATUS_CONVERTED ||
                 $row->status === queue::STATUS_DOWNLOADED ? '-' : $row->position,
@@ -110,6 +118,16 @@ class block_video_converter_renderer extends plugin_renderer_base {
             ));
         }
 
-        return html_writer::table($table);
+        $refresh_script = "
+            <script>
+                window.onload = function(){
+                    setInterval(function(){
+                        M.block_video_converter.refreshStatuses('" . $token . "');
+                    }, 5000);
+                }
+            </script>
+        ";
+
+        return html_writer::table($table) . $refresh_script;
     }
 }

@@ -49,6 +49,7 @@ $string['error:enqueuefailed'] = 'Error enqueueing the video file!';
 $string['error:wrongmime'] = 'Unknown MIME type!';
 $string['error:queueitemstatusupdatefailed'] = 'Queue item status update failed!';
 $string['error:queueitemremove'] = 'Error removing item from queue!';
+$string['error:queueitemidnotfound'] = 'Queue item not found!';
 $string['success:fileuploaded'] = 'Video uploaded successfully';
 $string['name'] = 'Name';
 $string['status'] = 'Status';

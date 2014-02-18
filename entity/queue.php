@@ -89,4 +89,16 @@ class queue extends entity {
 
         return $this->db->update_record('block_vc_queue', (object) $params);
     }
+
+    public function get_status($queue_item_id) {
+        $item = $this->db->get_record('block_vc_queue', array(
+            'id' => $queue_item_id,
+        ));
+
+        if ($item) {
+            return $item->status;
+        }
+
+        return false;
+    }
 }

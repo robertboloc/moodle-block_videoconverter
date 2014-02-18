@@ -53,6 +53,11 @@ class upload_form extends moodleform {
         $PAGE->requires->string_for_js('error:queueitemstatusupdatefailed', 'block_video_converter');
         $PAGE->requires->string_for_js('error:queueitemremove', 'block_video_converter');
         $PAGE->requires->string_for_js('success:fileuploaded', 'block_video_converter');
+        $PAGE->requires->string_for_js('status:queued', 'block_video_converter');
+        $PAGE->requires->string_for_js('status:converting', 'block_video_converter');
+        $PAGE->requires->string_for_js('status:failed', 'block_video_converter');
+        $PAGE->requires->string_for_js('status:converted', 'block_video_converter');
+        $PAGE->requires->string_for_js('status:downloaded', 'block_video_converter');
 
         $form = $this->_form;
 
