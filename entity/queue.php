@@ -83,6 +83,9 @@ class queue extends entity {
             case self::STATUS_DOWNLOADED:
                 $params['timedownloaded'] = $time;
                 break;
+            case self::STATUS_FAILED:
+                $params['position'] = 0;
+                break;
             default:
                 $params['timeupdated'] = $time;
         }
@@ -96,7 +99,7 @@ class queue extends entity {
         ));
 
         if ($item) {
-            return $item->status;
+            return $item;
         }
 
         return false;

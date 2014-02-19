@@ -107,6 +107,7 @@ class block_video_converter_renderer extends plugin_renderer_base {
                 $status_cell,
                 $row->status === queue::STATUS_CONVERTING ||
                 $row->status === queue::STATUS_CONVERTED ||
+                $row->status === queue::STATUS_FAILED ||
                 $row->status === queue::STATUS_DOWNLOADED ? '-' : $row->position,
                 userdate($row->timeadded),
                 !empty($row->timeupdated) ? userdate($row->timeupdated) : '-',

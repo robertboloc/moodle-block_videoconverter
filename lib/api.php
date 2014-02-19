@@ -181,7 +181,9 @@ switch($request) {
                 api_response(array(
                     'status' => 'success',
                     'data' => array(
-                        'status' => $item_status,
+                        'status' => $item_status->status,
+                        'timeupdated' => $item->timeupdated,
+                        'timedownloaded' => $item->timedownloaded,
                     ),
                 ));
             }
