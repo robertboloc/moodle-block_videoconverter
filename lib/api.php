@@ -175,15 +175,17 @@ switch($request) {
         $queue_item_id = filter_input(INPUT_GET, 'queue_item_id');
 
         if ($queue_item_id) {
-            $item_status = $queue_manager->get_status($queue_item_id);
+            $item = $queue_manager->get_status($queue_item_id);
 
-            if($item_status) {
+            if($item) {
                 api_response(array(
                     'status' => 'success',
                     'data' => array(
-                        'status' => $item_status->status,
-                        'timeupdated' => $item->timeupdated,
-                        'timedownloaded' => $item->timedownloaded,
+                        'status' => $item->status,
+                        'position' => $item->position,
+                        'timeupdated' => userdate($item->timeupdated),
+                        'timefinished' => userdate($item->timefinished),
+                        'timedownloaded' => userdate($item->timedownloaded),
                     ),
                 ));
             }

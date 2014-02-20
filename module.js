@@ -129,24 +129,35 @@ M.block_video_converter = {
     refreshStatuses : function (token) {
 
         // Obtain all the refreshable ids
-        var ids = Y.all('.block_video_converter-status-cell');
-
-        // Reuse this vars
-        var id = null;
-        var status = null;
+        var ids = Y.all('.block_video_converter-row');
 
         ids.each(function(node) {
-            id = node.getAttribute('data-id');
-            status = node.getAttribute('data-status');
+            // Obtain the status
+            var statusCell = node.one('.block_video_converter-cell-status');
+            var actionCell = node.one('.block_video_converter-cell-action');
+            var positionCell = node.one('.block_video_converter-cell-position');
+            var timeupdatedCell = node.one('.block_video_converter-cell-timeupdated');
+            var timefinishedCell = node.one('.block_video_converter-cell-timefinished');
+            var status = statusCell.getAttribute('data-status');
 
             // If in a final state do nothing
             if(status !== 'downloaded' && status !== 'converted' && status !== 'failed') {
+                /**
+                 * Obtain the queue item id. Because of a bug in the moodle
+                 * table renderer (can not set custom attributes on a table row)
+                 * we use the status cell to store the queue item id.
+                 * When the bug is fixed we should move this data item to the
+                 * table row.
+                 * https://tracker.moodle.org/browse/MDL-39030
+                 **/
+                var id = statusCell.getAttribute('data-id');
+
                 // Obtain the updated status
                 Y.io('api.php', {
                     method : 'GET',
                     data : 'token=' + token + '&request=queue.item&queue_item_id=' + id,
                     on : {
-                        complete : function(id, o) {
+                        complete : function(retid, o) {
 
                             var updatedStatus;
 
@@ -157,23 +168,31 @@ M.block_video_converter = {
 
                                     updatedStatus = jsonResponse.data.status;
 
-                                    var statusSpanContents = node.getElementsByTagName('span');
-                                    var statusSpan = statusSpanContents.shift();
-
                                     // Check if status changed
                                     if (status !== updatedStatus) {
 
-                                        statusSpan.set('innerHTML', M.util.get_string('status:' + updatedStatus, 'block_video_converter'));
+                                        var statusNode = statusCell.one('.block_video_converter-cell-status-content');
+                                        var actionNode = actionCell.one('.block_video_converter-cell-action-content');
+
+                                        statusNode.set('innerHTML', M.util.get_string('status:' + updatedStatus, 'block_video_converter'));
+
+                                        // Update timeupdated always
+                                        timeupdatedCell.setHTML(jsonResponse.data.timeupdated);
 
                                         switch(updatedStatus) {
                                             case 'converting' :
-                                                statusSpan.setAttribute('class', 'block_video_converter-badge-yellow');
+                                                statusNode.setAttribute('class', 'block_video_converter-cell-status-content block_video_converter-badge-yellow');
+                                                positionCell.setHTML(jsonResponse.data.position);
                                                 break;
                                             case 'failed' :
-                                                statusSpan.setAttribute('class', 'block_video_converter-badge-red');
+                                                statusNode.setAttribute('class', 'block_video_converter-cell-status-content block_video_converter-badge-red');
+                                                positionCell.setHTML('-');
                                                 break;
                                             case 'converted' :
-                                                statusSpan.setAttribute('class', 'block_video_converter-badge-green');
+                                                statusNode.setAttribute('class', 'block_video_converter-cell-status-content block_video_converter-badge-green');
+                                                timefinishedCell.setHTML(jsonResponse.data.timefinished);
+                                                actionNode.removeClass('block_video_converter-hidden');
+                                                positionCell.setHTML('-');
                                                 break;
                                             default:
                                         }
