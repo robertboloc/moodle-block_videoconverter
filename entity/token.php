@@ -148,6 +148,10 @@ class token extends entity {
              ', array(queue::STATUS_HIDDEN)
         );
 
+        if (!$users) {
+            return true;
+        }
+
         list($notInSql, $notInParams) = $this->db->get_in_or_equal(
             array_keys($users),
             SQL_PARAMS_QM,
@@ -158,7 +162,7 @@ class token extends entity {
         $this->db->delete_records_select(
             'block_vc_tokens',
             "timeexpires < ? AND userid $notInSql",
-            array(array_merge(array(time()), $notInParams))
+            array_merge(array(time()), $notInParams)
         );
     }
 }
