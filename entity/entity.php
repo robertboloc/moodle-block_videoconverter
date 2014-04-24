@@ -22,6 +22,9 @@
 
 abstract class entity {
 
+    /**
+     * @var moodle_database
+     */
     protected $db;
 
     public function __construct($db) {

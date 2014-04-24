@@ -23,4 +23,4 @@
 $plugin->version   = 2014013113;
 $plugin->requires  = 2012120308;
 $plugin->component = 'block_video_converter';
-$plugin->maturity  = MATURITY_BETA;
+$plugin->maturity  = MATURITY_STABLE;

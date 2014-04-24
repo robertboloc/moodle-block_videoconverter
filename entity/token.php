@@ -25,6 +25,9 @@ require_once(__DIR__ . '/queue.php');
 
 class token extends entity {
 
+    /**
+     * Makes sure a valid token exists for the user.
+     */
     public function ensure_exists() {
 
         $this->clean_old_tokens();
@@ -35,6 +38,12 @@ class token extends entity {
         }
     }
 
+    /**
+     * Checks if the provided token is valid.
+     *
+     * @param string $token
+     * @return boolean
+     */
     public function is_valid($token) {
         // Obtain users with tokens in use.
         $users = $this->db->get_records_sql(
@@ -55,6 +64,13 @@ class token extends entity {
         ));
     }
 
+    /**
+     * Obtains the token for the user. It will always return a valid token as it
+     * ensures one exists.
+     *
+     * @param int $userid
+     * @return string
+     */
     public function get_token_for_user($userid) {
         $this->ensure_exists();
 
@@ -65,6 +81,12 @@ class token extends entity {
         return $record->token;
     }
 
+    /**
+     * Creates a new token for the current logged in user.
+     *
+     * @global moxed $USER
+     * @return int|boolean
+     */
     public function create_token() {
         global $USER;
 
@@ -77,6 +99,12 @@ class token extends entity {
         return $this->db->insert_record('block_vc_tokens', $token);
     }
 
+    /**
+     * Checks if the current logged in user has a valid token.
+     *
+     * @global mixed $USER
+     * @return boolean
+     */
     public function has_valid_token() {
         global $USER;
 
@@ -93,6 +121,12 @@ class token extends entity {
         return false;
     }
 
+    /**
+     * Obtains the user from the token.
+     *
+     * @param string $token
+     * @return object
+     */
     public function user_of_token($token) {
         return $this->db->get_record('block_vc_tokens', array(
             'token' => $token
@@ -100,7 +134,7 @@ class token extends entity {
     }
 
     /**
-     * Only remove tokens not in use.
+     * Removes tokens not in use.
      */
     public function clean_old_tokens() {
 
@@ -114,12 +148,17 @@ class token extends entity {
              ', array(queue::STATUS_HIDDEN)
         );
 
-        $users_in = implode("','", array_keys($users));
+        list($notInSql, $notInParams) = $this->db->get_in_or_equal(
+            array_keys($users),
+            SQL_PARAMS_QM,
+            'param',
+            false
+        );
 
         $this->db->delete_records_select(
             'block_vc_tokens',
-            "timeexpires < ? AND userid NOT IN('$users_in')",
-            array(time())
+            "timeexpires < ? AND userid $notInSql",
+            array(array_merge(array(time()), $notInParams))
         );
     }
 }

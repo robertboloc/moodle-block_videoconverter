@@ -24,13 +24,25 @@ require_once(__DIR__ . '/entity.php');
 
 class file extends entity {
 
+    /**
+     * Creates a new file record.
+     *
+     * @param object $file
+     * @return int|boolean
+     */
     public function create_file_record($file) {
         return $this->db->insert_record('block_vc_files', $file);
     }
 
+    /**
+     * Removes a file record from the database.
+     *
+     * @param type $id
+     * @return boolean
+     */
     public function delete_file_record($id) {
         return $this->db->delete_records('block_vc_files', array(
-                    'id' => $id,
+            'id' => $id,
         ));
     }
 }

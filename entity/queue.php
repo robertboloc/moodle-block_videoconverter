@@ -24,13 +24,43 @@ require_once(__DIR__ . '/entity.php');
 
 class queue extends entity {
 
-    const STATUS_QUEUED = 'queued';
-    const STATUS_CONVERTING = 'converting';
-    const STATUS_FAILED = 'failed';
-    const STATUS_CONVERTED = 'converted';
-    const STATUS_DOWNLOADED = 'downloaded';
-    const STATUS_HIDDEN = 'hidden';
+    /**
+     * Video is queued for conversion.
+     */
+    const STATUS_QUEUED     = 'queued';
 
+    /**
+     * Video is currently beeing converted.
+     */
+    const STATUS_CONVERTING = 'converting';
+
+    /**
+     * Video conversion failed.
+     */
+    const STATUS_FAILED     = 'failed';
+
+    /**
+     * Video conversion completed successfully
+     */
+    const STATUS_CONVERTED  = 'converted';
+
+    /**
+     * Video has been downloaded. The countdown to deletion begins.
+     */
+    const STATUS_DOWNLOADED = 'downloaded';
+
+    /**
+     * Video has been downloaded and it has expired. The record is kept for
+     * logging.
+     */
+    const STATUS_HIDDEN     = 'hidden';
+
+    /**
+     * Returns the current queue for the provided user id.
+     *
+     * @param int $userid
+     * @return mixed
+     */
     public function get_queue_for_user($userid) {
         $sql = "
             SELECT
@@ -47,11 +77,17 @@ class queue extends entity {
          ";
 
         return $this->db->get_records_sql($sql, array(
-                    'userid' => $userid,
-                    'status' => self::STATUS_HIDDEN,
+            'userid' => $userid,
+            'status' => self::STATUS_HIDDEN,
         ));
     }
 
+    /**
+     * Returns the last item in the generic (all users) queue. Used to determine
+     * the global position in queue.
+     *
+     * @return object
+     */
     public function get_last_in_queue() {
         $sql = "
             SELECT
@@ -65,10 +101,24 @@ class queue extends entity {
         return $this->db->get_record_sql($sql, array(0));
     }
 
+    /**
+     * Adds an element to the queue.
+     *
+     * @param object $item
+     * @return boolean
+     */
     public function enqueue($item) {
         return $this->db->insert_record('block_vc_queue', $item);
     }
 
+    /**
+     * Updates the status of an item from the queue.
+     *
+     * @param int $queue_item_id
+     * @param string $status
+     * @param int $time
+     * @return int
+     */
     public function update_status($queue_item_id, $status, $time) {
         $params = array(
             'id' => $queue_item_id,
@@ -93,6 +143,12 @@ class queue extends entity {
         return $this->db->update_record('block_vc_queue', (object) $params);
     }
 
+    /**
+     * Returns the status of an item from the queue.
+     *
+     * @param int $queue_item_id
+     * @return boolean
+     */
     public function get_status($queue_item_id) {
         $item = $this->db->get_record('block_vc_queue', array(
             'id' => $queue_item_id,
