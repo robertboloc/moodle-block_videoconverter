@@ -33,8 +33,11 @@ $settings->add(new admin_setting_configtextarea(
         'block_video_converter/acceptedmimetypes',
         new lang_string('acceptedmimetypes', 'block_video_converter'),
         new lang_string('acceptedmimetypesdesc', 'block_video_converter'),
-        'video/avi
+        'video/3gpp
+         video/avi
          video/msvideo
+         video/x-ms-asf
+         video/x-flv
          video/x-msvideo
          video/avs-video
          video/x-dv
@@ -48,6 +51,7 @@ $settings->add(new admin_setting_configtextarea(
          video/vnd.rn-realvideo
          video/x-scm
          application/x-shockwave-flash
+         application/vnd.rn-realmedia
         ',
         PARAM_RAW
 ));

@@ -56,8 +56,9 @@ class block_video_converter_renderer extends plugin_renderer_base {
             // Action.
             $downloader = rtrim(get_config('block_video_converter', 'converterurl'), '/') . '/download.php';
             $download_url = new moodle_url($downloader, array(
-                'token' => $token,
-                'file' => $row->hash,
+                'token'         => $token,
+                'file'          => $row->hash,
+                'raw_name'      => urlencode($row->name),
                 'queue_item_id' => $row->id,
             ));
 
